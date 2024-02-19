@@ -1,0 +1,22 @@
+# 請替換掉所有的${}
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${demo-api-service}  # Name of the service
+  namespace: default  # Namespace where the service is deployed
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"8080":"${demo-backendconfig}"}}'  # Backend configuration for Google Cloud
+    cloud.google.com/neg: '{"ingress": true}'  # Network Endpoint Groups for Google Cloud
+spec:
+  selector:
+    app: ${demo-api}  # Label selector to match pods
+  ports:
+    - name: api
+      protocol: TCP
+      port: 8080  # Port exposed externally
+      targetPort: 8080  # Port on pods to forward traffic to
+    - name: health
+      protocol: TCP
+      port: 8088  # Health check port
+      targetPort: 8088  # Port on pods to forward health check requests to
+  type: ClusterIP  # Type of service, in this case, ClusterIP for internal access only

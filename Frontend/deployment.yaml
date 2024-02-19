@@ -1,0 +1,33 @@
+# 請替換掉所有的${}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${demo}  # Name of the deployment
+spec:
+  replicas: 1  # Number of desired replicas
+  strategy:
+    rollingUpdate:
+      maxSurge: 1  # Maximum number of additional pods that can be created during an update
+      maxUnavailable: 0  # Maximum number of unavailable pods during an update
+  selector:
+    matchLabels:
+      app: ${demo-app}  # Label selector to match pods controlled by this deployment
+  template:
+    metadata:
+      labels:
+        app: ${demo-app}  # Labels applied to pods created from this template
+    spec:
+      serviceAccountName: autopilot-worker-node-idp  # Service account used by the pods
+      containers:
+        - name: ${demo-app}
+          image: ${asia-east1-docker.pkg.dev/demo-project/demo/demo-app:latest}  # Docker image for the container
+          imagePullPolicy: Always  # Policy for pulling the container image
+          ports:
+            - containerPort: 8080  # Port to expose on the container
+          resources:
+            requests:
+              cpu: 0.5  # CPU resource request
+              memory: 512Mi  # Memory resource request
+            limits:
+              cpu: 0.5  # CPU resource limit
+              memory: 512Mi  # Memory resource limit

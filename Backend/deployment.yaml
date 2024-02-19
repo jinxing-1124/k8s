@@ -1,0 +1,51 @@
+# 請替換掉所有的${}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${demo}  # Deployment name
+spec:
+  replicas: 1  # Number of desired replicas
+  strategy:
+    rollingUpdate:
+      maxSurge: 1  # Maximum number of additional pods that can be created
+      maxUnavailable: 0  # Maximum number of unavailable pods during update
+  selector:
+    matchLabels:
+      app: ${demo-api}  # Label selector for identifying pods managed by this deployment
+  template:
+    metadata:
+      labels:
+        app: ${demo-api}  # Labels to be applied to pods created from this template
+    spec:
+      serviceAccountName: ${demo-service-account}  # Service account name for the pod
+      containers:
+        - name: ${demo-api}
+          image: ${asia-east1-docker.pkg.dev/demo-project/demo/demo-api:latest}  # Docker image for the container
+          imagePullPolicy: Always  # Always pull the latest image
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: sit  # Set the active Spring profile to 'sit'
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -XX:+UseG1GC  
+          ports:
+            - containerPort: 8080  # Port to expose on the container
+            - containerPort: 8088  # Another port For Health check
+          resources:
+            requests:
+              cpu: 0.5  # CPU resource request
+              memory: 1024Mi  # Memory resource request
+            limits:
+              cpu: 0.5  # CPU resource limit
+              memory: 1024Mi  # Memory resource limit
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.1.0  # Docker image for Cloud SQL Proxy
+          args:
+            - "--private-ip"  # Use private IP for connection
+            - "--structured-logs"  # Output structured logs
+            - "--port=5432"  # Port to listen on
+            - "${cloud-sql-connection-name}"  # Cloud SQL instance connection string
+          resources:
+            requests:
+              cpu: 250m  # CPU resource request
+              memory: 500Mi  # Memory resource request

@@ -1,16 +1,14 @@
-若還不了解[Kubernetes](https://kubernetes.io/docs/home/)
-可以先點此連結
+請先閱讀 [Kubernetes](https://kubernetes.io/docs/home/)
+相關資訊
 
 
-情境描述
 
 這個範例是將前後端程式部署到GKE上面的設定檔，
 
 GKE Cluster mode 是 autopilot
 
-GKE 使用的是 VPC-native clusters，因為 VPC-native clusters 有別於地端的 Cluster VPC，它可以透過 VPC Peering，與其他 GCP 服務的 VPC network 進行溝通，
+GKE 使用的是 VPC-native clusters，因為 VPC-native clusters 有別於地端的 Cluster VPC，它可以與在同一個 VPC 下的服務進行溝通，
 詳細資訊可至[官網](https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips?hl=zh-cn)查詢
-
 
 
 

@@ -1,0 +1,8 @@
+# 請替換掉所有的${}
+
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: demo-frontendconfig
+spec:
+  sslPolicy: ${ssl-policy}   #設置ssl policy

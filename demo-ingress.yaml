@@ -1,0 +1,22 @@
+# 請替換掉所有的${}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: $(demo-ingress)                  # Name of the Ingress object
+  namespace: default                # Namespace of the Ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: $("demo-load-balance-ip")   # 填寫手動建立的 ip 名稱
+    ingress.gcp.kubernetes.io/pre-shared-cert: $("demo-ca")   # 將 Certificate Manager 註冊的憑證填入
+    spec.ingressClassName: "gce"    # Specify the Ingress class
+    networking.gke.io/v1beta1.FrontendConfig: "demo-frontendconfig"   # Specify the frontend config
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api                  # Matched path
+            pathType: Prefix            # Path type, here is prefix matching
+            backend:
+              service:
+                name: idp-api-service   # Name of the backend service
+                port:
+                  number: 8080           # Port number of the backend service
